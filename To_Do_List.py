@@ -125,7 +125,7 @@ class item_operator(common_function, item_check):
                 if not (0 <= index_operator < len(self.store_3Dlist[index_list][2])):
                     print("Invalid index.")
                     return
-
+                # use loop to run the operators
                 while True:
                     print(f"\nEditing: {self.store_3Dlist[index_list][2][index_operator][0]}")
                     for i, op in enumerate(self.item_check_list):
@@ -144,9 +144,10 @@ class item_operator(common_function, item_check):
                     elif choice == 5:
                         break
                     self.show_item_data(index_list, index_operator)
+            # if the choice is not in the choice list
             except ValueError:
                 print("Please enter a number.")
-
+    # use a loop to run the operator
     def acted_item_operator(self, index_list):
         print(SPACE)
         self.show_list_name(self.operator_item)
@@ -161,23 +162,28 @@ class item_operator(common_function, item_check):
                 self.store_3Dlist[index_list][2] = []
                 print("All items cleared.")
             elif choice == 4:
+
+                # return 0 to stop the loop
                 return 0
         except ValueError:
             print("Please enter a valid number.")
+        # return 1 to continue the loop
         return 1
 
 
 class list_check(common_function):
     def __init__(self, list_check_list, store_3Dlist, item_op_cl):
+        # super inherite the class_check_list
         super().__init__()
         self.list_check_list = list_check_list
         self.store_3Dlist = store_3Dlist
         self.item_op_cl = item_op_cl
 
+        # show all list check operators
     def show_list_check_operator(self):
         for i, item in enumerate(self.list_check_list):
             print(f"{i + 1}.{item}")
-
+        #Acted the list check related functions
     def acted_list_check(self, index_list):
         print(SPACE)
         print(f"List: {self.store_3Dlist[index_list][0]}")
@@ -201,24 +207,30 @@ class list_check(common_function):
             print("Invalid input.")
         return 1
 
-
+# class to store the list operators functions
 class list_operator(list_check):
     def __init__(self, operator_list, store_3Dlist, check_menu, item_op_cl):
         super().__init__(check_menu, store_3Dlist, item_op_cl)
         self.operator_list = operator_list
         self.store_3Dlist = store_3Dlist
-
+    # function to act the list operators function
     def acted_list_operator(self):
         print(SPACE)
         print("Current lists:")
+
+        # to justify if there is list in the store 3D list or not
         if not self.store_3Dlist:
             print("[Empty]")
+
+        # if there is list in the store 3D list , it will show the order depends on creating time and show out name of list
         for i, lst in enumerate(self.store_3Dlist):
             print(f"{i + 1}. {lst[0]}")
         print(SPACE)
 
         self.show_list_name(self.operator_list)
         print(SPACE)
+
+        # follow different number to act different tasks
         try:
             choice = int(input("Choice: "))
             if choice == 1:
@@ -237,32 +249,21 @@ class list_operator(list_check):
                     index_operator = int(input("Check which list (index): ")) - 1
                     if 0 <= index_operator < len(self.store_3Dlist):
                         while True:
-                            if self.acted_list_check(index_operator) == 0: break
+                            if self.acted_list_check(index_operator) == 0:
+                                break
                 else:
                     print("No lists to check.")
             elif choice == 4:
                 self.store_3Dlist.clear()
             elif choice == 5:
+                # return 0 to break the loop
                 return 0
         except (ValueError, IndexError):
+            # if the choice is not a number or the choice is a number but doesn't found in the lists
             print("Invalid selection.")
+
+        # return 1 to continue the loop
         return 1
-# class to store compass functions
-
-class compass:
-    def __init__(self):
-        pass
-
-
-
-    def got_content(self):
-        self.content=""
-        with open("Compass_version1", "r") as file:
-            self.content=file.read()
-    def show_compass(self):
-        self.got_content()
-        print(SPACE)
-        print(self.content)
 
 # Function to show menu
 def menu_show(menu):
@@ -273,6 +274,8 @@ def menu_show(menu):
 def menu_selected():
     print(SPACE)
     menu_choice = input("please enter your choice[1-3]: ")
+    # If the menu_choice is digit whether string type or int type , the return int(menu_choice)
+    # but return 0 and run menu_selected function again
     return int(menu_choice) if menu_choice.isdigit() else 0
 
 
@@ -283,6 +286,8 @@ def action_user():
     try:
         with open(filename, "r") as file:
             store_3Dlist = json.loads(file.read())
+
+    # if it doesn't exist to do list text , it will create a empty list and create a new file '
     except (FileNotFoundError, JSONDecodeError):
         store_3Dlist = []
 
@@ -308,13 +313,13 @@ def action_user():
                 if list_op_cl.acted_list_operator() == 0:
                     break
 
-        elif choice == 3:
+        elif choice == 2:
             print("Exiting and Saving...")
             break
 
         # if user input an invalid choice
         else:
-            print("Please select 1, 2, or 3.")
+            print("Please select 1, 2")
 
         # update the filename and store new data
         with open(filename, "w") as file:
