@@ -1,13 +1,22 @@
 
 # import json package to write and store the list in a text
 import json
+
 from json import JSONDecodeError
+import keyboard as ky
 
 
 
 
 # use the SPACE with many dash to better show the process
-SPACE = "--------------------------------------------------------------------------------------------------------------------"
+# SPACE = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+space_length=400
+SPACE="-"*space_length
+SPACE=SPACE+"\n"+SPACE
+SPACE=f"\n{SPACE}"
+intent_length=20
+INTENT="*"*intent_length
 
 
 #the common function class to store the function can be used in all classes
@@ -115,7 +124,7 @@ class item_operator(common_function, item_check):
         # To get the index of item and item name and item task
         for i, itm in enumerate(items):
             print(f"{i + 1}. {itm[0]} [{itm[3]}]")
-        return True
+        return 
     # Function to check the detail of an item
     def check_item_detail(self, index_list):
         if self.show_all_items(index_list):
@@ -131,7 +140,9 @@ class item_operator(common_function, item_check):
                     for i, op in enumerate(self.item_check_list):
                         print(f"{i + 1}.{op}")
 
-                    choice = int(input("Choice: "))
+                    choice = input("Choice: ")
+                    choice=int(choice) if choice.isdigit() else "enter"
+
                     if choice == 1:
                         self.remove_item(index_list, index_operator)
                         break
@@ -141,7 +152,7 @@ class item_operator(common_function, item_check):
                         self.state_item(index_list, index_operator)
                     elif choice == 4:
                         self.mark_item(index_list, index_operator)
-                    elif choice == 5:
+                    elif choice == 5 or "enter":
                         break
                     self.show_item_data(index_list, index_operator)
             # if the choice is not in the choice list
@@ -153,7 +164,8 @@ class item_operator(common_function, item_check):
         self.show_list_name(self.operator_item)
         print(SPACE)
         try:
-            choice = int(input(f"Choice[1-{len(self.operator_item)}]: "))
+            choice = input(f"Choice[1-{len(self.operator_item)}]: ")
+            choice=int(choice) if choice.isdigit() else "enter"
             if choice == 1:
                 self.add_item(index_list)
             elif choice == 2:
@@ -161,7 +173,8 @@ class item_operator(common_function, item_check):
             elif choice == 3:
                 self.store_3Dlist[index_list][2] = []
                 print("All items cleared.")
-            elif choice == 4:
+            elif choice == 4 or "enter"   :
+                
 
                 # return 0 to stop the loop
                 return 0
@@ -190,9 +203,11 @@ class list_check(common_function):
         print(SPACE)
         self.show_list_check_operator()
         try:
-            choice = int(input("Choice: "))
+            choice = input("Choice: ")
+            choice=int(choice) if choice.isdigit() else "enter"
             if choice == 1:
                 new_name = input("New list name: ")
+
                 if new_name: self.store_3Dlist[index_list][0] = new_name
             elif choice == 2:
                 print(f"Description: {self.store_3Dlist[index_list][1]}")
@@ -201,7 +216,7 @@ class list_check(common_function):
                     if self.item_op_cl.acted_item_operator(index_list) == 0:
 
                         break
-            elif choice == 4:
+            elif choice == 4 or "enter":
                 return 0
         except ValueError:
             print("Invalid input.")
@@ -232,7 +247,8 @@ class list_operator(list_check):
 
         # follow different number to act different tasks
         try:
-            choice = int(input("Choice: "))
+            choice = input("Choice: ")
+            choice=int(choice) if choice.isdigit() else "enter"
             if choice == 1:
                 name = input("List name: ")
                 desc = input("Description: ")
@@ -255,7 +271,7 @@ class list_operator(list_check):
                     print("No lists to check.")
             elif choice == 4:
                 self.store_3Dlist.clear()
-            elif choice == 5:
+            elif choice == 5 or "enter":
                 # return 0 to break the loop
                 return 0
         except (ValueError, IndexError):
@@ -268,18 +284,31 @@ class list_operator(list_check):
 # Function to show menu
 def menu_show(menu):
     for i, element in enumerate(menu):
-        print(f"{i + 1}.{element.upper()}")
+        print(f"{i +1}.{element.upper()}")
 
 # Function to show out the menu users can use
 def menu_selected():
     print(SPACE)
-    menu_choice = input("please enter your choice[1-3]: ")
+    menu_choice = input("please enter your choice[1-2]: ")
     # If the menu_choice is digit whether string type or int type , the return int(menu_choice)
     # but return 0 and run menu_selected function again
-    return int(menu_choice) if menu_choice.isdigit() else 0
+    return menu_choice if menu_choice.isdigit()  else "enter"
+
+def operator_list_recombine(list_name):
+    new_list=[]
+    gap_length=15
+    gap=" "
+    for operator in list_name:
+        if len(operator)<20:
+            block=" "*(20-len(operator))
+
+            operator = f"{operator}{block}"
+        operator=f"{gap*gap_length*3}{INTENT}{gap*(gap_length+2)}{operator}{gap*(gap_length-5)}{INTENT}"
+        new_list.append(operator)
+    return new_list
 
 
-def action_user():
+def main():
     # open and check if there is existed file , got the last data, if there is not existed file, open a new and data is empty
     store_3Dlist = []
     filename = "To_Do_List.txt"
@@ -293,11 +322,17 @@ def action_user():
 
     # To store the all functions in these list and use class method to run the code
     item_check_menu = ["Remove", "Update", "Complete/State", "Mark", "Back"]
-    item_op_menu = ["ADD NEW LIST", "Check Items", "Cancel All Items", "Back"]
+    item_check_menu=operator_list_recombine(item_check_menu)
+
+
+    item_op_menu = ["Add New items", "Check Items", "Cancel All Items", "Back"]
+    item_op_menu=operator_list_recombine(item_op_menu)
     item_op_cl = item_operator(item_op_menu, store_3Dlist, item_check_menu)
 
     list_op_menu = ["Add New List", "Remove List", "Check List", "Clear All Lists", "Back"]
-    list_check_menu = ["Update Info", "Show Desc", "Manage Items", "Back"]
+    list_op_menu=operator_list_recombine(list_op_menu)
+    list_check_menu = ["Update Info", "Show Detail", "Manage Items", "Back"]
+    list_check_menu=operator_list_recombine(list_check_menu)
     list_op_cl = list_operator(list_op_menu, store_3Dlist, list_check_menu, item_op_cl)
 
 
@@ -305,15 +340,16 @@ def action_user():
     while True:
         print(SPACE)
         menu = ["START LIST","Ending"]
+        menu=operator_list_recombine(menu)
         menu_show(menu)
         choice = menu_selected()
         # users can select to start a list , reading the negative and ending the process
-        if choice == 1:
+        if choice == "1":
             while True:
                 if list_op_cl.acted_list_operator() == 0:
                     break
 
-        elif choice == 2:
+        elif choice == "2" or "enter":
             print("Exiting and Saving...")
             break
 
@@ -328,4 +364,4 @@ def action_user():
 
 # the function to run the process
 if __name__ == "__main__":
-    action_user()
+    main()
