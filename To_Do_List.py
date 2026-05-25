@@ -124,9 +124,12 @@ class item_operator(common_function, item_check):
         # To get the index of item and item name and item task
         for i, itm in enumerate(items):
             print(f"{i + 1}. {itm[0]} [{itm[3]}]")
-        return 
+            return True
+
     # Function to check the detail of an item
     def check_item_detail(self, index_list):
+        
+        # to show all current item in the list
         if self.show_all_items(index_list):
             # to boundary the index_list
             try:
@@ -141,7 +144,11 @@ class item_operator(common_function, item_check):
                         print(f"{i + 1}.{op}")
 
                     choice = input("Choice: ")
-                    choice=int(choice) if choice.isdigit() else "enter"
+
+
+                    if choice==" ":
+                        break
+
 
                     if choice == 1:
                         self.remove_item(index_list, index_operator)
@@ -152,7 +159,7 @@ class item_operator(common_function, item_check):
                         self.state_item(index_list, index_operator)
                     elif choice == 4:
                         self.mark_item(index_list, index_operator)
-                    elif choice == 5 or "enter":
+                    elif choice == 5:
                         break
                     self.show_item_data(index_list, index_operator)
             # if the choice is not in the choice list
@@ -165,7 +172,7 @@ class item_operator(common_function, item_check):
         print(SPACE)
         try:
             choice = input(f"Choice[1-{len(self.operator_item)}]: ")
-            choice=int(choice) if choice.isdigit() else "enter"
+            choice=int(choice) if choice.isdigit() else 0
             if choice == 1:
                 self.add_item(index_list)
             elif choice == 2:
@@ -173,7 +180,7 @@ class item_operator(common_function, item_check):
             elif choice == 3:
                 self.store_3Dlist[index_list][2] = []
                 print("All items cleared.")
-            elif choice == 4 or "enter"   :
+            elif choice == 4 :
                 
 
                 # return 0 to stop the loop
