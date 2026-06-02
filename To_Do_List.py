@@ -34,6 +34,7 @@ class common_function:
 # the function to show the list name when the user want to operator in items
     def show_list_name(self, list_got):
         i = 0
+        print("Current List :")
         for element in list_got:
             i = i + 1
             print(f"{i}.{element}")
@@ -52,6 +53,7 @@ class item_check:
     def show_item_data(self, index_list, index_item):
         # use "item" to store an item with its data
         item = self.store_3Dlist[index_list][2][index_item]
+        print("Item Detail: ")
         print(
             f"\n--- ITEM DETAILS ---\nName: {item[0]}\nTask: {item[1]}\nTime: {item[2]}\nState: {item[3]}\nMark: {item[4]}")
 
@@ -84,6 +86,8 @@ class item_check:
     # use the function to mark the item task
     def mark_item(self, index_list, index_item):
         mark = input("Give a mark (1-5 or description): ")
+        mark_length=int(mark)
+        mark="*"*mark_length
         self.store_3Dlist[index_list][2][index_item][4] = mark
 
 # the class to store the functions of items
@@ -128,11 +132,12 @@ class item_operator(common_function, item_check):
 
     # Function to check the detail of an item
     def check_item_detail(self, index_list):
-        
+
         # to show all current item in the list
         if self.show_all_items(index_list):
             # to boundary the index_list
             try:
+                print(SPACE)
                 index_operator= int(input("Select item index: ")) - 1
                 if not (0 <= index_operator < len(self.store_3Dlist[index_list][2])):
                     print("Invalid index.")
@@ -142,8 +147,8 @@ class item_operator(common_function, item_check):
                     print(f"\nEditing: {self.store_3Dlist[index_list][2][index_operator][0]}")
                     for i, op in enumerate(self.item_check_list):
                         print(f"{i + 1}.{op}")
-
-                    choice = input("Choice: ")
+                    print("Please select your action")
+                    choice =int(input("Choice: "))
 
 
                     if choice==" ":
@@ -161,6 +166,7 @@ class item_operator(common_function, item_check):
                         self.mark_item(index_list, index_operator)
                     elif choice == 5:
                         break
+                    print("New Item Data:")
                     self.show_item_data(index_list, index_operator)
             # if the choice is not in the choice list
             except ValueError:
@@ -201,6 +207,7 @@ class list_check(common_function):
 
         # show all list check operators
     def show_list_check_operator(self):
+        print("List Operator Menu:")
         for i, item in enumerate(self.list_check_list):
             print(f"{i + 1}.{item}")
         #Acted the list check related functions
@@ -210,6 +217,7 @@ class list_check(common_function):
         print(SPACE)
         self.show_list_check_operator()
         try:
+            print("Please enter your action")
             choice = input("Choice: ")
             choice=int(choice) if choice.isdigit() else "enter"
             if choice == 1:
@@ -245,15 +253,19 @@ class list_operator(list_check):
             print("[Empty]")
 
         # if there is list in the store 3D list , it will show the order depends on creating time and show out name of list
+
         for i, lst in enumerate(self.store_3Dlist):
             print(f"{i + 1}. {lst[0]}")
         print(SPACE)
 
+        print("List Function Menu")
         self.show_list_name(self.operator_list)
         print(SPACE)
 
         # follow different number to act different tasks
         try:
+            print("Please enter your action")
+
             choice = input("Choice: ")
             choice=int(choice) if choice.isdigit() else "enter"
             if choice == 1:
@@ -290,6 +302,8 @@ class list_operator(list_check):
 
 # Function to show menu
 def menu_show(menu):
+    print("Welcome to TO DO LIST MENu")
+    print("TO DO LIST APP\nMENU:\n")
     for i, element in enumerate(menu):
         print(f"{i +1}.{element.upper()}")
 
