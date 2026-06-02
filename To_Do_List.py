@@ -237,8 +237,18 @@ class item_operator(common_function, item_check):
         self.show_list_name(self.operator_item)
         print(SPACE)
         try:
-            choice = input(f"Choice[1-{len(self.operator_item)}]: ")
-            choice=int(choice) if choice.isdigit() else 0
+            # boundary if users input invalid choice number
+            while True:
+                choice = input(f"Choice[1-{len(self.operator_item)}]: ")
+                if choice in range(1,len(self.operator_item)):
+                    break
+                else:
+                    print("Please enter a valid choice!")
+                    print("Please enter again")
+
+
+
+
             if choice == 1:
                 self.add_item(index_list)
             elif choice == 2:
@@ -278,7 +288,13 @@ class list_check(common_function):
         self.show_list_check_operator()
         try:
             print("Please enter your action")
-            choice = input("Choice: ")
+            while True:
+                choice = input("Choice: ")
+                if choice in range(1,3):
+                    break
+                else:
+                    print("Please enter a valid choice!")
+                    print("Please enter again")
             choice=int(choice) if choice.isdigit() else "enter"
             if choice == 1:
                 new_name = input("New list name: ")
