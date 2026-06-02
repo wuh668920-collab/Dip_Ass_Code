@@ -61,11 +61,25 @@ class item_check:
     def update_item(self, index_list, index_item):
 
         # the process allow use input a space if they don't need a name or task to the item'
-        new_name = input("Enter new name (or skip): ")
+        while True:
+            new_name = input("Enter new name (or skip): ")
 
-        new_task = input("Enter new task (or skip): ")
+
+
+            new_task = input("Enter new task (or skip): ")
+            if len(new_name) > 50 or len(new_task) > 500 :
+                print("Item cannot be longer than 50 characters.","current length:",{len(new_name)})
+                print("Item description cannot be longer than 500 characters. .","current length:",{len(new_task)})
+            else:
+                break
+
+
         if new_name != "": self.store_3Dlist[index_list][2][index_item][0] = new_name
+        else:
+            print("New name cannot be empty.")
         if new_task != "": self.store_3Dlist[index_list][2][index_item][1] = new_task
+        else:
+            print("New task cannot be empty.")
 
 
     # use function to remove a particular item
