@@ -16,7 +16,7 @@ SPACE="-"*space_length
 SPACE=SPACE+"\n"+SPACE
 SPACE=f"\n{SPACE}"
 intent_length=20
-INTENT="*"*intent_length
+INTENT="-"*intent_length
 
 
 #the common function class to store the function can be used in all classes
@@ -286,6 +286,10 @@ class list_operator(list_check):
                         while True:
                             if self.acted_list_check(index_operator) == 0:
                                 break
+                    else:
+                        # boundary the choice is valid.
+                        print("Invalid index.")
+                        print("Please try again")
                 else:
                     print("No lists to check.")
             elif choice == 4:
