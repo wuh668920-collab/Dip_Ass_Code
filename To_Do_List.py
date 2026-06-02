@@ -67,6 +67,8 @@ class item_check:
 
 
             new_task = input("Enter new task (or skip): ")
+            # boundary the length of item name and item description
+            #due to too long , it is not aesthetic
             if len(new_name) > 50 or len(new_task) > 500 :
                 print("Item cannot be longer than 50 characters.","current length:",{len(new_name)})
                 print("Item description cannot be longer than 500 characters. .","current length:",{len(new_task)})
@@ -91,16 +93,36 @@ class item_check:
     def state_item(self, index_list, index_item):
         state = input("Complete? [Yes/No]: ").capitalize()
 
-        if state == "Yes" :
-             self.store_3Dlist[index_list][2][index_item][3] = "Completed"
-        else:
+        while True:
+
+            if state == "Yes" :
+                 self.store_3Dlist[index_list][2][index_item][3] = "Completed"
+                 break
+            elif state == "No" :
 
 
-            self.store_3Dlist[index_list][2][index_item][3] = "Uncompleted"
+                self.store_3Dlist[index_list][2][index_item][3] = "Uncompleted"
+                break
+            else:
+                print("Invalid input.")
+                print("Please only type [Yes] or [No].")
     # use the function to mark the item task
     def mark_item(self, index_list, index_item):
-        mark = input("Give a mark (1-5 or description): ")
-        mark_length=int(mark)
+        mark_length=0
+
+        # boundary if the mark "*" is in 1 -5
+        while True:
+
+            mark = input("Give a mark (1-5 or description): ")
+            if mark in range(1, 5):
+                break
+            else:
+                print("Invalid number.\nPlease only type 1 - 5.")
+
+
+
+            mark_length=int(mark)
+
         mark="*"*mark_length
         self.store_3Dlist[index_list][2][index_item][4] = mark
 
@@ -114,10 +136,26 @@ class item_operator(common_function, item_check):
     # function to get the data of item to prepare for add item
     def item_data_got(self):
 
+
+        # boundary the length of item name , task , time , to be aesthetic.
+
         # got the item name , item task, item deadline
-        name = input("Item name: ")
-        task = input("Task description: ")
-        time = input("Time (eg. 12:00): ")
+        while True:
+            name = input("Item name: ")
+            task = input("Task description: ")
+            time = input("Time (eg. 12:00): ")
+            if len(name)>50 or len(task)>250 or len(time)>20:
+                print("Item name cannot be longer than 50 characters.","current length:",{len(name)})
+                print("Item task cannot be longer than 250 characters. .","current length:",{len(task)})
+                print("Item time cannot be longer than 20 characters.","current length:",{len(time)})
+                print("Please enter again")
+
+            elif name or task:
+                print("Item name, task cannot be empty")
+                print("Please enter again")
+
+            else:
+                break
 
         # combine them as a list, default the state is uncompleted and mark is none
         self.item = [name, task, time, "Uncompleted", "None"]
@@ -162,7 +200,15 @@ class item_operator(common_function, item_check):
                     for i, op in enumerate(self.item_check_list):
                         print(f"{i + 1}.{op}")
                     print("Please select your action")
-                    choice =int(input("Choice: "))
+
+                    # boundary if user enter an invalid choice number
+                    while True:
+                        choice =int(input("Choice: "))
+                        if len(self.item_check_list)>choice>0:
+                            break
+                        else:
+                            print("Please enter a valid choice!")
+                            print("Please enter again")
 
 
                     if choice==" ":
