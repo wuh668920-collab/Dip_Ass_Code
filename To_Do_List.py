@@ -3,7 +3,6 @@
 import json
 
 from json import JSONDecodeError
-import keyboard as ky
 
 
 
@@ -11,11 +10,11 @@ import keyboard as ky
 # use the SPACE with many dash to better show the process
 # SPACE = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 
-space_length=400
-SPACE="-"*space_length
-SPACE=SPACE+"\n"+SPACE
+space_length=120
+SPACE=f"-"*space_length
+SPACE=SPACE+"\n"+SPACE+"\n""\n"
 SPACE=f"\n{SPACE}"
-intent_length=20
+intent_length=5
 INTENT="-"*intent_length
 
 
@@ -34,7 +33,7 @@ class common_function:
 # the function to show the list name when the user want to operator in items
     def show_list_name(self, list_got):
         i = 0
-        print("Current List :")
+        print(f"Current List :")
         for element in list_got:
             i = i + 1
             print(f"{i}.{element}")
@@ -53,7 +52,7 @@ class item_check:
     def show_item_data(self, index_list, index_item):
         # use "item" to store an item with its data
         item = self.store_3Dlist[index_list][2][index_item]
-        print("Item Detail: ")
+        print(f"Item Detail: ")
         print(
             f"\n--- ITEM DETAILS ---\nName: {item[0]}\nTask: {item[1]}\nTime: {item[2]}\nState: {item[3]}\nMark: {item[4]}")
 
@@ -62,15 +61,15 @@ class item_check:
 
         # the process allow use input a space if they don't need a name or task to the item'
         while True:
-            new_name = input("Enter new name (or skip): ")
+            new_name = input(f"Enter new name (or skip): ")
 
 
 
-            new_task = input("Enter new task (or skip): ")
+            new_task = input(f"Enter new task (or skip): ")
             # boundary the length of item name and item description
             #due to too long , it is not aesthetic
             if len(new_name) > 50 or len(new_task) > 500 :
-                print("Item cannot be longer than 50 characters.","current length:",{len(new_name)})
+                print(f"Item cannot be longer than 50 characters.","current length:",{len(new_name)})
                 print("Item description cannot be longer than 500 characters. .","current length:",{len(new_task)})
             else:
                 break
@@ -108,22 +107,19 @@ class item_check:
                 print("Please only type [Yes] or [No].")
     # use the function to mark the item task
     def mark_item(self, index_list, index_item):
-        mark_length=0
+        mark=0
 
         # boundary if the mark "*" is in 1 -5
         while True:
 
+
             mark = input("Give a mark (1-5 or description): ")
-            if mark in range(1, 5):
+            if mark in ["1","2","3","4","5"]:
                 break
             else:
                 print("Invalid number.\nPlease only type 1 - 5.")
 
-
-
-            mark_length=int(mark)
-
-        mark="*"*mark_length
+        mark="*"*int(mark)
         self.store_3Dlist[index_list][2][index_item][4] = mark
 
 # the class to store the functions of items
@@ -176,7 +172,7 @@ class item_operator(common_function, item_check):
             # To ensure if there is item in the file or not
             print("No items found.")
             return False
-        
+
         # To get the index of item and item name and item task
         for i, itm in enumerate(items):
             print(f"{i + 1}. {itm[0]} [{itm[3]}]")
@@ -207,16 +203,11 @@ class item_operator(common_function, item_check):
                     # boundary if user enter an invalid choice number
                     while True:
                         choice =int(input("Choice: "))
-                        if len(self.item_check_list)>choice>0:
+                        if len(self.item_check_list)+1>choice>0:
                             break
                         else:
                             print("Please enter a valid choice!")
                             print("Please enter again")
-
-
-                    if choice==" ":
-                        break
-
 
                     if choice == 1:
                         self.remove_item(index_list, index_operator)
@@ -243,7 +234,7 @@ class item_operator(common_function, item_check):
             # boundary if users input invalid choice number
             while True:
                 choice = int(input(f"Choice[1-{len(self.operator_item)}]: "))
-                if choice in range(1,len(self.operator_item)):
+                if choice in range(1,len(self.operator_item)+1):
                     break
                 else:
                     print("Please enter a valid choice!")
@@ -260,7 +251,7 @@ class item_operator(common_function, item_check):
                 self.store_3Dlist[index_list][2] = []
                 print("All items cleared.")
             elif choice == 4 :
-                
+
 
                 # return 0 to stop the loop
                 return 0
@@ -294,7 +285,7 @@ class list_check(common_function):
                 print("Please enter your action")
                 while True:
                     choice = int(input("Choice: "))
-                    if choice in range(1,5):
+                    if choice in range(1,6):
                         break
                     else:
                         print("Please enter a valid choice!")
@@ -354,55 +345,100 @@ class list_operator(list_check):
         print(SPACE)
 
         # follow different number to act different tasks
-        try:
-            print("Please enter your action")
 
-            choice = input("Choice: ")
-            choice=int(choice) if choice.isdigit() else "enter"
-            if choice == 1:
+        print("Please enter your action")
+        while True:
+            try:
+                choice = int(input("Choice: "))
+                if choice in range(1,6):
+                    break
+                else:
+                    print("Please enter a valid choice!")
+                    print("Please enter again")
+            except ValueError:
+                print("Please enter a valid choice!")
+                print("Please enter again")
+        if choice == 1:
+            while True:
+                name = input("List name: ")
+                desc = input("Description: ")
+
+                if len(name)>50 or len(desc)>250:
+                    print("List cannot be longer than 50 characters!","current length",len(name))
+                    print("Description cannot be longer than 250 characters!","current length",len(desc))
+                    print("Please try again")
+                elif len(name) == 0 or len(desc) == 0 :
+                    print("List cannot be empty!")
+                    print("Description cannot be empty!")
+                    print("Please try again")
+
+                else:
+                    self.store_3Dlist.append([name, desc, []])
+                    break
+
+        elif choice == 2:
+            if self.store_3Dlist:
+
                 while True:
-                    name = input("List name: ")
-                    desc = input("Description: ")
+                    try:
 
-                    if len(name)>50 or len(desc)>250:
-                        print("List cannot be longer than 50 characters!","current length",len(name))
-                        print("Description cannot be longer than 250 characters!","current length",len(desc))
+
+                        index_operator = int(input("Remove which list (index): ")) - 1
+
+                        if 0 <= index_operator < len(self.store_3Dlist):
+                            self.store_3Dlist.pop(index_operator)
+                            break
+
+                        else:
+                            print("Nothing to remove.")
+                            print("Please try again")
+                    except ValueError:
+                        print("Invalid input.")
+                        print("Please enter a number")
                         print("Please try again")
-                    if len(name) == 0 or len(desc) == 0 :
-                        print("List cannot be empty!")
-                        print("Description cannot be empty!")
+        elif choice == 3:
+            if self.store_3Dlist:
+
+                while True:
+                    try:
+                        index_operator = int(input("Check which list (index): ")) - 1
+                        if index_operator < 0 or index_operator > len(self.store_3Dlist):
+                            print("No list to Use")
+                            print("Please try again")
+                        else:
+                            break
+                    except ValueError:
+                        print("Invalid input.")
                         print("Please try again")
 
-                    else:break
-                self.store_3Dlist.append([name, desc, []])
-            elif choice == 2:
-                if self.store_3Dlist:
-                    index_operator = int(input("Remove which list (index): ")) - 1
-                    if 0 <= index_operator < len(self.store_3Dlist):
-                        self.store_3Dlist.pop(index_operator)
+
+                if 0 <= index_operator < len(self.store_3Dlist):
+
+                    self.acted_list_check(index_operator)
+
                 else:
-                    print("Nothing to remove.")
-            elif choice == 3:
-                if self.store_3Dlist:
-                    index_operator = int(input("Check which list (index): ")) - 1
-                    if 0 <= index_operator < len(self.store_3Dlist):
-                        while True:
-                            if self.acted_list_check(index_operator) == 0:
-                                break
-                    else:
-                        # boundary the choice is valid.
-                        print("Invalid index.")
-                        print("Please try again")
+                    # boundary the choice is valid.
+                    print("Invalid index.")
+                    print("Please try again")
+            else:
+                print("No lists to check.")
+        elif choice == 4:
+            while True:
+                ensure=input("Please ensure you want to clear all data\nThe data cannot be returned\nPlease enter [yes/no]")
+                if ensure == "yes":
+                    self.store_3Dlist.clear()
+                    break
+
+                elif ensure == "no":
+                    break
+
                 else:
-                    print("No lists to check.")
-            elif choice == 4:
-                self.store_3Dlist.clear()
-            elif choice == 5 or "enter":
-                # return 0 to break the loop
-                return 0
-        except (ValueError, IndexError):
-            # if the choice is not a number or the choice is a number but doesn't found in the lists
-            print("Invalid selection.")
+                    print("Please enter [yes/no]")
+
+        elif choice == 5:
+            # return 0 to break the loop
+            return 0
+
 
         # return 1 to continue the loop
         return 1
@@ -411,6 +447,7 @@ class list_operator(list_check):
 def menu_show(menu):
     print("Welcome to TO DO LIST MENU")
     print("TO DO LIST APP\nMENU:\n")
+    print("Warning: USERS MUST SELECT \"ENDING\" THE DATA CAN BE STORED ")
     for i, element in enumerate(menu):
         print(f"{i +1}.{element.upper()}")
 
@@ -426,15 +463,17 @@ def menu_selected():
             if menu_choice in range(1,3):
                 break
             else:
-                print("Invalid choice.")
+                print(f"Invalid choice.")
+                print(f"Please try again")
 
         except ValueError:
-            print("Invalid input.")
+            print(f"Invalid input.")
+            print(f"Please try again")
     return menu_choice
 
 def operator_list_recombine(list_name):
     new_list=[]
-    gap_length=15
+    gap_length=0
     gap=" "
     for operator in list_name:
         if len(operator)<20:
@@ -483,9 +522,9 @@ def main():
         choice = menu_selected()
         # users can select to start a list , reading the negative and ending the process
         if choice == 1:
-            while True:
-                if list_op_cl.acted_list_operator() == 0:
-                    break
+
+            list_op_cl.acted_list_operator()
+
 
         elif choice == 2:
             print("Exiting and Saving...")
