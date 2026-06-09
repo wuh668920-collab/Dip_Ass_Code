@@ -33,7 +33,7 @@ class common_function:
 # the function to show the list name when the user want to operator in items
     def show_list_name(self, list_got):
         i = 0
-        print(f"Current List :")
+
         for element in list_got:
             i = i + 1
             print(f"{i}.{element}")
@@ -176,7 +176,7 @@ class item_operator(common_function, item_check):
         # To get the index of item and item name and item task
         for i, itm in enumerate(items):
             print(f"{i + 1}. {itm[0]} [{itm[3]}]")
-            return True
+        return True
 
     # Function to check the detail of an item
     def check_item_detail(self, index_list):
@@ -191,7 +191,8 @@ class item_operator(common_function, item_check):
                     index_operator= int(input("Select item index: ")) - 1
                     if not (0 <= index_operator < len(self.store_3Dlist[index_list][2])):
                         print("Invalid index.")
-                    else:break
+                    else:
+                        break
 
                 # use loop to run the operators
                 while True:
@@ -326,19 +327,28 @@ class list_operator(list_check):
         self.operator_list = operator_list
         self.store_3Dlist = store_3Dlist
     # function to act the list operators function
-    def acted_list_operator(self):
-        print(SPACE)
-        print("Current lists:")
 
-        # to justify if there is list in the store 3D list or not
-        if not self.store_3Dlist:
-            print("[Empty]")
+    def current_list(self):
+        print(SPACE)
+
+
+        print("Current lists:")
+        if self.store_3Dlist is None:
+            self.store_3Dlist = []
+            print("No List has been Created")
+
 
         # if there is list in the store 3D list , it will show the order depends on creating time and show out name of list
+        else:
+            for i, lst in enumerate(self.store_3Dlist):
+                print(f"{i + 1}. {lst[0]}")
+            print(SPACE)
 
-        for i, lst in enumerate(self.store_3Dlist):
-            print(f"{i + 1}. {lst[0]}")
+
+    def acted_list_operator(self):
         print(SPACE)
+
+
 
         print("List Function Menu")
         self.show_list_name(self.operator_list)
@@ -373,17 +383,25 @@ class list_operator(list_check):
                     print("Please try again")
 
                 else:
+                    print("Your new list has been added successfully!")
+                    if self.store_3Dlist is None:
+                        self.store_3Dlist = []
                     self.store_3Dlist.append([name, desc, []])
+                    self.current_list()
+
+
                     break
 
         elif choice == 2:
             if self.store_3Dlist:
+                self.current_list()
+
 
                 while True:
                     try:
 
 
-                        index_operator = int(input("Remove which list (index): ")) - 1
+                        index_operator = int(input("Input an index to choose which list in current list you want to remove : ")) - 1
 
                         if 0 <= index_operator < len(self.store_3Dlist):
                             self.store_3Dlist.pop(index_operator)
@@ -398,6 +416,7 @@ class list_operator(list_check):
                         print("Please try again")
         elif choice == 3:
             if self.store_3Dlist:
+                self.current_list()
 
                 while True:
                     try:
@@ -423,16 +442,19 @@ class list_operator(list_check):
             else:
                 print("No lists to check.")
         elif choice == 4:
+            self.current_list()
             while True:
                 ensure=input("Please ensure you want to clear all data\nThe data cannot be returned\nPlease enter [yes/no]")
                 if ensure == "yes":
                     self.store_3Dlist.clear()
+                    print("ALl data has been cleared")
                     break
 
                 elif ensure == "no":
                     break
 
                 else:
+                    print("Invalid input")
                     print("Please enter [yes/no]")
 
         elif choice == 5:
@@ -445,9 +467,9 @@ class list_operator(list_check):
 
 # Function to show menu
 def menu_show(menu):
-    print("Welcome to TO DO LIST MENU")
+
     print("TO DO LIST APP\nMENU:\n")
-    print("Warning: USERS MUST SELECT \"ENDING\" THE DATA CAN BE STORED ")
+
     for i, element in enumerate(menu):
         print(f"{i +1}.{element.upper()}")
 
@@ -497,6 +519,9 @@ def main():
     except (FileNotFoundError, JSONDecodeError):
         store_3Dlist = []
 
+    if store_3Dlist is None:
+        store_3Dlist = []
+
     # To store the all functions in these list and use class method to run the code
     item_check_menu = ["Remove", "Update", "Complete/State", "Mark", "Back"]
     item_check_menu=operator_list_recombine(item_check_menu)
@@ -513,9 +538,13 @@ def main():
     list_op_cl = list_operator(list_op_menu, store_3Dlist, list_check_menu, item_op_cl)
 
 
+    count=0
 
+    print("Welcome to TO DO LIST MENU")
     while True:
         print(SPACE)
+        if count>0:
+            print(f"Your action is done and data has been refreshed successfully")
         menu = ["START LIST","Ending"]
         menu=operator_list_recombine(menu)
         menu_show(menu)
@@ -537,6 +566,8 @@ def main():
         # update the filename and store new data
         with open(filename, "w") as file:
             json.dump(store_3Dlist, file)
+
+        count=count+1
 
 
 # the function to run the process
