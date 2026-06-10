@@ -5,16 +5,26 @@ from json import JSONDecodeError
 from subprocess import check_output
 
 import easygui as eg
+from easygui import buttonbox
 
 global MENU_OP
 global LISTS_OP
 global TN
+global SPACE
+global LIST_F_OP
+global ITEMS_OP
+global ITEM_F_OP
+
 
 
 
 MENU_OP = ["START LIST", "Ending", "COMPASS", "ACCOUNT"]
 LISTS_OP = ["Add New List", "Remove List", "Check List", "Clear All Lists", "Back"]
+LIST_F_OP= ["Update Info", "Show Detail", "Manage Items", "Back"]
+ITEMS_OP= ["Add New items", "Check Items", "Cancel All Items", "Back"]
+ITEM_F_OP=["Remove", "Update", "Complete/State", "Mark", "Back"]
 TN="To-Do-List-App"
+SPACE="-"*60+"\n"+"-"*60
 
 
 
@@ -51,26 +61,31 @@ def compass_show():
 
 
 def show_list(data):
-    content=""
+    content=[]
+    content.append("order ."+"List Name" + "\t:\n" + "List Description" + "\n"+SPACE+"\n")
     for i,element in enumerate(data):
-        i=i+1
-        content=f"{str(i)}"+"."+element[0]+"\n"
-    if content=="":
-        eg.msgbox("The entered list cannot be empty",title=TN)
-    eg.textbox(content,title=TN)
 
+        content.append(str(i+1)+"."+element[0]+"\t:\t"+element[1]+"\n"+SPACE+"\n")
+    if content==[]:
+        eg.msgbox("The entered list cannot be empty",title=TN)
+    eg.textbox("Current lists: ",TN,content)
 
 
 def add_list(data):
     while True:
-        list_name=eg.enterbox("Please enter the name of the list you want to add",title=TN)
-        list_desc=eg.enterbox("Please enter the description of the list you want to add",title=TN)
-        if list_name=="" or list_desc=="":
+        try:
+            list_name=eg.enterbox("Please enter the name of the list you want to add",title=TN)
+            description="Your Description:\n"
+            list_desc=eg.textbox(f"Description for {list_name} :",TN,description)
+            if list_name=="" or list_desc=="":
+                eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
+            elif len(list_name) >50 or len(list_desc) >999:
+                eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nPlease try it again",title=TN)
+            else:
+                break
+
+        except TypeError:
             eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
-        elif len(list_name) >50 or len(list_desc) >999:
-            eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nPlease try it again",title=TN)
-        else:
-            break
 
 
     items=[]
@@ -94,8 +109,71 @@ def remove_list(data,index_element):
 
 
 
+def choice_list_function_got(index,function):
+
+    choice=buttonbox(f"Please enter your choice for list {index}",choices=function,title=TN)
+
+    return choice
+def list_f_update(index,data):
+    index_name=index
+    count=0
+    for element in data:
+        if element[0]==index:
+            index=count
+        else:
+            count+=1
+
+    while True:
+
+        new_name=eg.enterbox(f"Please enter your new list for {index_name} ",title=TN)
+        if len(new_name)==0 or len(new_name)>50:
+            eg.msgbox("The new name length cannot be longer than 50 characters OR empty\nPlease try it again",title=TN)
+        else:
+            break
+
+    data[index][0]=new_name
+    eg.msgbox("Successfully updated list",title=TN)
+
+    return data
+
+
+
+def list_f_show_detail(index,data):
+    index_name=index
+    count=0
+    for element in data:
+        if element[0]==index:
+            index=count
+        else:
+            count+=1
+
+    content=f"Description of The list [{index_name}] is: \n{data[count][1]}]"
+    eg.textbox(f"List and Description:" ,TN,content)
+
+
+def manage_item():
+
+
 def check_list(index,data):
-    show_list(data)
+
+    while True:
+        choice_got=choice_list_function_got(index,LIST_F_OP)
+        if choice_got=="Update Info":
+
+            data=list_f_update(index,data)
+        elif choice_got=="Show Detail":
+            list_f_show_detail(index,data)
+
+
+        elif choice_got=="Manage Items":
+            manage_item()
+
+        elif choice_got=="Back":
+            break
+        else:
+            eg.msgbox("Your choice is invalid\nPlease enter it again")
+
+        return data
 
 
 def clear_list(data):
@@ -143,6 +221,7 @@ def lists_operator(data):
 
 
         elif lists_operator_choice_gain == "Check List":
+            show_list(data)
             index=got_index_list(data)
             check_list(index,data)
 
@@ -186,11 +265,13 @@ def action():
 
         store_data(data)
 
+
 def main():
 
-
+    print("Welcome to To_Do Lists!")
 
     action()
+    print("App is Ending")
 
 
 
