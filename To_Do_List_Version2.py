@@ -1,15 +1,24 @@
 # import json package to write and store the list in a text
 import json
 
-from json import JSONDecodeError
-from subprocess import check_output
 
+
+# import JSON package to store and load data in file
+from json import JSONDecodeError
+
+# import easygui package to use buttonbox, textbox, msgbox usage to interface with users.
 import easygui as eg
 from easygui import buttonbox
 
+
+# I use global to these var. let them can be used in anywhere of the file.
 global MENU_OP
 global LISTS_OP
+
+# TN is all title of box in my program
 global TN
+
+# SPACE is barrier in my program 
 global SPACE
 global LIST_F_OP
 global ITEMS_OP
@@ -17,12 +26,15 @@ global ITEM_F_OP
 global data
 
 
+#I create these lists to store the all functions  can be used in my app
 MENU_OP = ["START LIST", "ENDING"]
-LISTS_OP = ["Add New List", "Remove List", "Check List", "Clear All Lists", "Back"]
-LIST_F_OP = ["Update Info", "Show Detail", "Manage Items", "Back"]
-ITEMS_OP = ["Add New Items", "Check Items", "Cancel All Items", "Back"]
+LISTS_OP = ["Check List","Add New List", "Remove List",  "Clear All Lists", "Back"]
+LIST_F_OP = ["Manage Items","Update Info", "Show Detail", "Manage Items", "Back"]
+ITEMS_OP = [ "Check Items","Add New Items", "Cancel All Items", "Back"]
 ITEM_F_OP = ["Remove", "Update", "Complete/State", "Mark", "Back"]
 TN = "To-Do-List-App"
+
+# use space as barrier in the textbox
 SPACE = "-" * 60 + "\n" + "-" * 60
 
 
@@ -34,9 +46,12 @@ SPACE = "-" * 60 + "\n" + "-" * 60
 
 
 
-
+# function to get data from To_Do_list.txt
 def got_data():
+    # to ensure the file name
     filename="To_Do_List.txt"
+
+    # to open filename and get the data
     try:
         with open(filename, "r") as file:
 
@@ -46,30 +61,42 @@ def got_data():
     except (FileNotFoundError, JSONDecodeError):
         data=[]
 
+    # if data is None type, can boundary it , let the program running continue
     if data==None:
         data=[]
-
+    # return data, let it involved following functions
     return data
 
 
 
-
+# function to store data into the To_Do_list.txt
 def store_data(data):
+    # to ensure the file name
     filename="To_Do_List.txt"
+    #to use new data to cover old data
     with open(filename, "w") as file:
         json.dump(data, file)
+
+    # if data is stored, msg out successfully stored data
     eg.msgbox("Successfully stored data",title=TN)
 
-def _show():
-    pass
 
 
+# function to show out current lists has been stored
 def show_list(data):
+    # create empty list and named it as content to stored sentence
     content=[]
+    # input elements set, and tell user which content list includes
     content.append("order ."+"List Name" + "\t:\n" + "List Description" + "\n"+SPACE+"\n")
+
+    # to show out all of lists
     for i,element in enumerate(data):
 
+        # input all lists in content list
+
         content.append(str(i+1)+"."+element[0]+"\t:\t"+element[1]+"\n"+SPACE+"\n")
+
+    # use the textbox to show out all of lists
     eg.textbox("Current lists: ",TN,content)
 
 
@@ -155,7 +182,7 @@ def list_f_show_detail(index,data):
 
 def item_operator_choice_got(index):
 
-    ITEMS_OP = ["Add New Items", "Check Items", "Cancel All Items", "Back"]
+    ITEMS_OP = ["Check Items","Add New Items",  "Cancel All Items", "Back"]
     choice=buttonbox(f"Please enter your choice for list {index} ",choices=ITEMS_OP,title=TN)
 
     return choice
