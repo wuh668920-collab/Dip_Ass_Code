@@ -27,9 +27,9 @@ global data
 
 
 #I create these lists to store the all functions  can be used in my app
-MENU_OP = ["START LIST", "ENDING"]
+MENU_OP = ["START LIST","USE GUIDE","GRAPH EXAMPLE","ENDING"]
 LISTS_OP = ["Check List","Add New List", "Remove List",  "Clear All Lists", "Back"]
-LIST_F_OP = ["Manage Items","Update Info", "Show Detail", "Manage Items", "Back"]
+LIST_F_OP = ["Manage Items","Update Info", "Show Detail", "Back"]
 ITEMS_OP = [ "Check Items","Add New Items", "Cancel All Items", "Back"]
 ITEM_F_OP = ["Remove", "Update", "Complete/State", "Mark", "Back"]
 TN = "To-Do-List-App"
@@ -102,37 +102,42 @@ def show_list(data):
 
 # function to add a new list
 def add_list(data):
-    # use a loop to got list name and description until the list name and description is valid
-    while True:
+# use a loop to got list name and description until the list name and description is valid
 
-        # try the list name and description if they are  None type
-        try:
-            # use enterbox to get list name
-            list_name=eg.enterbox("Please enter the name of the list you want to add",title=TN)
 
-            #use enterbox to get list description
-            description="Your Description:\n"
-            list_desc=eg.textbox(f"Description for {list_name} :",TN,description)
+    # try the list name and description if they are  None type
+    try:
+        # use enterbox to get list name
+        list_name=eg.enterbox("Please enter the name of the list you want to add",title=TN)
+        switch=1
 
-            #use selectively order to stop the loop until the list name and description is valid
-            if list_name=="" or list_desc=="":#if the list name and description is empty
-                eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
 
-            elif len(list_name) >50 or len(list_desc) >999:#if the list name and description is longer than limitation
-                eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nPlease try it again",title=TN)
-            else:
-                break
+        #use enterbox to get list description
+        description="Your Description:\n"
+        list_desc=eg.textbox(f"Description for {list_name} :",TN,description)
 
-        except TypeError:
+        #use selectively order to stop the loop until the list name and description is valid
+        if list_name=="" or list_desc=="":#if the list name and description is empty
             eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
+            switch=0
 
-    # create an empty list to store the list data, list name, list description, and list storing items which is "list" type
-    items=[]
-    list=[list_name,list_desc,items]
+        elif len(list_name) >50 or len(list_desc) >999:#if the list name and description is longer than limitation
+            eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nPlease try it again",title=TN)
 
-    #use append to  add new list
+            switch=0
 
-    data.append(list)
+    except TypeError:
+        eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
+
+    if switch==1:
+
+        # create an empty list to store the list data, list name, list description, and list storing items which is "list" type
+        items=[]
+        list=[list_name,list_desc,items]
+
+        #use append to  add new list
+
+        data.append(list)
 
 
 # function to remove a current list. into data, and index of the list you want to remove
@@ -141,10 +146,10 @@ def remove_list(data,index_element):
     # the index of the list is the name of the list, so use the loop and count to let the index is the order(int type) of the list in data
     count=0
     for element in data:
-        if element[0]==index_element:
-            index=count
+        if element[0] == index_element:
+            index = count
         else:
-            count+=1
+            count += 1
 
 
     # use pop to remove the current list
@@ -196,7 +201,7 @@ def list_f_show_detail(index,data):
         else:
             count+=1
     # use content which is list type to  store name and description and textbox
-    content=f"Description of The list [{index_name}] is: \n{data[count][1]}]"
+    content=f"Description of The list [{index_name}] is: \n{data[index][1]}]"
     eg.textbox(f"List and Description:" ,TN,content)
 
 #function to got the item function choice
@@ -210,38 +215,42 @@ def item_operator_choice_got(index):
 
     return choice
 
-def add_item():
+def add_item(index):
     # use a loop to get the item information until the item information is valid
 
-    while True:
-        # use try to except if information is None type
-        try:
 
-            item_name=eg.enterbox("Please enter the name of the item you want to add",title=TN)
-            description="Your Description:\n"
-            item_desc=eg.textbox(f"Description for {item_name} :",TN,description)
-            time="Your time:"
-            item_time=eg.textbox(f"Time for {item_name}],E.G.[12:30]:",TN,time)
-            # if the information is empty
-            if item_name=="" or item_desc=="" or item_time=="":
-                eg.msgbox("The entered name and description, time cannot be empty\nPlease try it again",title=TN)
-            # if the information is longer than limitation
-            elif len(item_name) >50 or len(item_desc) >999 or len(item_time) >50:
-                eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nThe entered time cannot be longer than 50 character\nPlease try it again",title=TN)
-            else:
-                break
+    # use try to except if information is None type
+    try:
 
-        except TypeError:
-            eg.msgbox("The entered name and description , time cannot be empty\nPlease try it again",title=TN)
+        item_name=eg.enterbox("Please enter the name of the item you want to add",title=TN)
+        switch=1
+        description="Your Description:\n"
+        item_desc=eg.textbox(f"Description for {item_name} :",TN,description)
+        time="Your time:"
+        item_time=eg.textbox(f"Time for {item_name}],E.G.[12:30]:",TN,time)
+        # if the information is empty
+        if item_name=="" or item_desc=="" or item_time=="":
+            eg.msgbox("The entered name and description, time cannot be empty\nPlease try it again",title=TN)
+            switch=0
+        # if the information is longer than limitation
+        elif len(item_name) >50 or len(item_desc) >999 or len(item_time) >50:
+            eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nThe entered time cannot be longer than 50 character\nPlease try it again",title=TN)
+            switch=0
 
-    # the default of state is Incomplete and the default of mark is 0 .
-    state="Incomplete"
-    mark=0
-    # use item which is list type to store the item information
-    item=[item_name,item_desc,item_time,state,mark]
+    except TypeError:
+        eg.msgbox("The entered name and description , time cannot be empty\nPlease try it again",title=TN)
+
+    if switch==1:
+
+        # the default of state is Incomplete and the default of mark is 0 .
+        state="Incomplete"
+        mark=0
+        # use item which is list type to store the item information
+        new_item=[item_name,item_desc,item_time,state,mark]
 
     # return the item out to store the item in data
-    return item
+        data[index][2].append(new_item)
+        eg.msgbox("Successfully added new items")
 
 
 # function to run the item functions options
@@ -297,7 +306,7 @@ def item_f_show_current_item(index,data):
         if element[4]==0:
             mark="No mark"
 
-        elif element[4]!=1:
+        else:
             mark="*"*element[4]
             mark="mark:"+mark
 
@@ -357,9 +366,8 @@ def manage_item(index,data):
             break
         # add new items in
         elif choice=="Add New Items":
-            new_item=add_item()
-            data[index][2].append(new_item)
-            eg.msgbox("Successfully added new items")
+            add_item(index)
+
 
 
         # check the items information
@@ -370,53 +378,68 @@ def manage_item(index,data):
             item_f_op(f_choice_got,data,index,item_index)
 
 
-
+        # clear the lists
         elif choice=="Cancel All Items":
             data[index][2]=[]
-
+        # if the choice is invalid , let users try it again
         else:
             eg.msgbox("Your choice is invalid\nPlease enter it again")
 
+# function to run all function option in the check list
 def check_list(index,data):
 
+    # use loop to get the valid choice
     while True:
+        # use choice_got function to get choice which function option to  run
         choice_got=choice_list_function_got(index,LIST_F_OP)
+        # update the list
         if choice_got=="Update Info":
 
             data=list_f_update(index,data)
+        # show selected lists' detail
         elif choice_got=="Show Detail":
             list_f_show_detail(index,data)
 
-
+        # to run manage function options in the selected list
         elif choice_got=="Manage Items":
             manage_item(index,data)
 
+        # if users click the back  button, the program will stop
         elif choice_got=="Back":
             break
+
+        # if the choice is invalid. warning users and try it again
         else:
             eg.msgbox("Your choice is invalid\nPlease enter it again")
 
-        return data
+        # return new data
+    return data
 
-
+# function to clear all current list
 def clear_list(data):
     data.clear()
 
 
 
-
+# function to get index of list which one you selected
 def got_index_list(data):
     
     content=[]
+    # create a empty content to store all current name of the lists
     for element in data:
         content.append(element[0])
+    # use the button to select which list you want to do
     choice_index_list=eg.buttonbox("Select a Current List",choices=content,title=TN)
+
+    # return the choice users selects
     return choice_index_list
 
 
+# function to run the lists operators
 def lists_operator(data):
+    # use loop to get valid operators
     while True:
-
+        # use loop to get valid choice and run clear all lists and add new list only if data is empty
         while True:
             lists_operator_choice_gain = eg.buttonbox("Please enter your choice in Lists Menu:", title=TN,
                                                       choices=LISTS_OP)
@@ -476,6 +499,24 @@ def action():
             break
 
 
+        elif menu_choice_got=="USE GUIDE":
+            try:
+                filename="Version_2_to_do_list_guide"
+                with open(filename,"r",encoding="utf-8") as f:
+
+                    eg.codebox("Version2 To DO List App Guide",title=TN,text=f)
+            except FileNotFoundError:
+                eg.msgbox("I cannot find the text file\nPlease ensure you download the guide text")
+
+
+        elif menu_choice_got=="GRAPH EXAMPLE":
+            try:
+                filename = "Version_2_to_do_list_graph_struture"
+                with open(filename, "r", encoding="utf-8") as f:
+
+                    eg.codebox("Version2 To DO List App Guide", title=TN, text=f)
+            except FileNotFoundError:
+                eg.msgbox("I cannot find the text file\nPlease ensure you download the graph structure text")
 
         else:
             eg.msgbox(f"current choice: {menu_choice_got}\nPlease select a menu option\nInvalid choice you do\nTry it Again")
