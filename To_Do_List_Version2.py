@@ -94,6 +94,13 @@ def show_list(data):
 
         # input all lists in content list
 
+        if type(element[0]) == type(None):  # Or: if task_title is None:
+            element[0] = "None"
+
+        # Check if task_detail is NoneType and convert it to a string
+        if type(element[1]) == type(None):  # Or: if task_detail is None:
+            element[1] = "None"
+
         content.append(str(i+1)+"."+element[0]+"\t:\t"+element[1]+"\n"+SPACE+"\n")
 
     # use the textbox to show out all of lists
@@ -117,7 +124,10 @@ def add_list(data):
         list_desc=eg.textbox(f"Description for {list_name} :",TN,description)
 
         #use selectively order to stop the loop until the list name and description is valid
-        if list_name=="" or list_desc=="":#if the list name and description is empty
+        if list_name is None or list_desc is None:
+            switch=0
+
+        elif list_name=="" or list_desc=="":#if the list name and description is empty
             eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
             switch=0
 
@@ -125,6 +135,7 @@ def add_list(data):
             eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nPlease try it again",title=TN)
 
             switch=0
+
 
     except TypeError:
         eg.msgbox("The entered name and description cannot be empty\nPlease try it again",title=TN)
@@ -134,6 +145,7 @@ def add_list(data):
         # create an empty list to store the list data, list name, list description, and list storing items which is "list" type
         items=[]
         list=[list_name,list_desc,items]
+
 
         #use append to  add new list
 
@@ -164,6 +176,8 @@ def choice_list_function_got(index,function):
 
     # use buttonbox to get the choice
     choice=buttonbox(f"Please enter your choice for list {index}",choices=function,title=TN)
+    if choice is None:
+        choice="Back"
     # return the choice out
     return choice
 
@@ -180,6 +194,8 @@ def list_f_update(index,data):
     while True:
 
         new_name=eg.enterbox(f"Please enter your new list for {index_name} ",title=TN)
+        if new_name is None:
+            return data
         if len(new_name)==0 or len(new_name)>50:
             eg.msgbox("The new name length cannot be longer than 50 characters OR empty\nPlease try it again",title=TN)
         else:
@@ -210,12 +226,14 @@ def item_operator_choice_got(index):
     ITEMS_OP = ["Check Items","Add New Items",  "Cancel All Items", "Back"]
 
     choice=buttonbox(f"Please enter your choice for list {index} ",choices=ITEMS_OP,title=TN)
+    if choice is None:
+        choice="Back"
 
     # return the item function choice
 
     return choice
 
-def add_item(index):
+def add_item(index,data):
     # use a loop to get the item information until the item information is valid
 
 
@@ -229,13 +247,16 @@ def add_item(index):
         time="Your time:"
         item_time=eg.textbox(f"Time for {item_name}],E.G.[12:30]:",TN,time)
         # if the information is empty
-        if item_name=="" or item_desc=="" or item_time=="":
+        if item_name is None or item_desc is None or item_time is None:
+            switch=0
+        elif item_name=="" or item_desc=="" or item_time=="":
             eg.msgbox("The entered name and description, time cannot be empty\nPlease try it again",title=TN)
             switch=0
         # if the information is longer than limitation
         elif len(item_name) >50 or len(item_desc) >999 or len(item_time) >50:
             eg.msgbox("The entered name cannot be longer than 50 characters\nThe entered description cannot be longer than 999 characters\nThe entered time cannot be longer than 50 character\nPlease try it again",title=TN)
             switch=0
+
 
     except TypeError:
         eg.msgbox("The entered name and description , time cannot be empty\nPlease try it again",title=TN)
@@ -274,11 +295,15 @@ def item_f_op(choice,data,index,item_index):
         # change the item state, complete or incomplete or doing
         elif choice=="Complete/State":
             state=eg.buttonbox("Please select the item state [Incomplete/Complete/Doing]",TN,["Incomplete","Complete","Doing"])
+            if state is None:
+                state=data[index][2][item_index][3]
             data[index][2][item_index][3]=state
 
         # change the item mark from 0 to 1-5
         elif choice=="Mark":
             mark=eg.buttonbox("Please select the item mark[*]",TN,["1","2","3","4","5"])
+            if mark is None:
+                mark=data[index][2][item_index][4]
             # use string * to show user's mark
             data[index][2][item_index][4]=int(mark)
 
@@ -287,8 +312,7 @@ def item_f_op(choice,data,index,item_index):
             pass
 
         # if choice is invalid, use msgbox to show and let users try it again
-        else:
-            eg.msgbox("Your choice is invalid\nPlease try again",title=TN)
+
 
 
 
@@ -307,7 +331,7 @@ def item_f_show_current_item(index,data):
             mark="No mark"
 
         else:
-            mark="*"*element[4]
+            mark="*"*int(element[4])
             mark="mark:"+mark
 
 
@@ -317,17 +341,21 @@ def item_f_show_current_item(index,data):
     eg.textbox("Current Items: ",TN,content)
     # use buttonbox to select which item you want to manage
     item_index=eg.buttonbox("Select which item you want to manage ",TN,item_names)
-    for i,element in enumerate(data[index][2]):
-        if element[0]==item_index:
-            index=i
-    # return the index of item the user want to check
+    item_index = eg.buttonbox("Select which item you want to manage ", TN, item_names)
+    if item_index is None:
+        return None
+    for i, element in enumerate(data[index][2]):
+        if element[0] == item_index:
+            index = i
     return index
 
 
 # function to  select which function you want to do for items
 def item_f_choice_got(data,index,item_index):
     ITEM_F_OP = ["Remove", "Update", "Complete/State", "Mark", "Back"]
-    choice=buttonbox(f"Please select a function to the item [{data[index][2][item_index][0]}]  ",choices=ITEM_F_OP,title=TN)
+    choice=eg.buttonbox(f"Please select a function to the item [{data[index][2][item_index][0]}]  ",choices=ITEM_F_OP,title=TN)
+    if choice is None:
+        choice="Back"
 
     return choice
 
@@ -366,24 +394,31 @@ def manage_item(index,data):
             break
         # add new items in
         elif choice=="Add New Items":
-            add_item(index)
+            add_item(index,data)
 
 
 
         # check the items information
 
-        elif choice=="Check Items":
-            item_index=item_f_show_current_item(index,data)
-            f_choice_got=item_f_choice_got(data,index,item_index)
-            item_f_op(f_choice_got,data,index,item_index)
+        elif choice == "Check Items":
 
+            item_index = item_f_show_current_item(index, data)
+
+            if item_index is None:
+
+                continue
+
+            else:
+
+                f_choice_got = item_f_choice_got(data, index, item_index)
+
+                item_f_op(f_choice_got, data, index, item_index)
 
         # clear the lists
         elif choice=="Cancel All Items":
             data[index][2]=[]
         # if the choice is invalid , let users try it again
-        else:
-            eg.msgbox("Your choice is invalid\nPlease enter it again")
+
 
 # function to run all function option in the check list
 def check_list(index,data):
@@ -409,8 +444,7 @@ def check_list(index,data):
             break
 
         # if the choice is invalid. warning users and try it again
-        else:
-            eg.msgbox("Your choice is invalid\nPlease enter it again")
+
 
         # return new data
     return data
@@ -432,6 +466,8 @@ def got_index_list(data):
     choice_index_list=eg.buttonbox("Select a Current List",choices=content,title=TN)
 
     # return the choice users selects
+    if choice_index_list is None:
+        return None
     return choice_index_list
 
 
@@ -439,15 +475,20 @@ def got_index_list(data):
 def lists_operator(data):
     # use loop to get valid operators
     while True:
+
         # use loop to get valid choice and run clear all lists and add new list only if data is empty
         while True:
             lists_operator_choice_gain = eg.buttonbox("Please enter your choice in Lists Menu:", title=TN,
                                                       choices=LISTS_OP)
+            if lists_operator_choice_gain is None:
+                lists_operator_choice_gain="Back"
             if data==[]:
                 if lists_operator_choice_gain in ["Back","Clear All Lists","Add New List"]:
                     break
                 else:
                     eg.msgbox("The Current lists is empty, so cannot to do it",title=TN,)
+
+
             else:
                 break
 
@@ -456,29 +497,31 @@ def lists_operator(data):
         if lists_operator_choice_gain == "Back":
 
             break
+
+
         elif lists_operator_choice_gain == "Add New List":
 
             add_list(data)
 
-
         elif lists_operator_choice_gain == "Remove List":
-            index=got_index_list(data)
-            remove_list(data,index)
-            eg.msgbox("Successfully remove list",title=TN)
-
+            index = got_index_list(data)
+            if index is None:
+                continue
+            remove_list(data, index)
+            eg.msgbox("Successfully remove list", title=TN)
 
         elif lists_operator_choice_gain == "Check List":
             show_list(data)
-            index=got_index_list(data)
-            check_list(index,data)
-
+            index = got_index_list(data)
+            if index is None:
+                continue
+            check_list(index, data)
 
         elif lists_operator_choice_gain == "Clear All Lists":
             clear_list(data)
 
 
-        else:
-            eg.msgbox(f"current choice:{lists_operator_choice_gain}\nPlease enter your choice in Lists Menu!\nplease enter again")
+
 
 
     return data
@@ -491,11 +534,15 @@ def action():
     while True:
         data=got_data()
         menu_choice_got=eg.buttonbox("Please enter your choice in Menu:",title=TN, choices=MENU_OP)
+        if menu_choice_got is None:
+            menu_choice_got="ENDING"
         if menu_choice_got=="START LIST":
             data=lists_operator(data)
+            store_data(data)
 
 
         elif menu_choice_got=="ENDING":
+            store_data(data)
             break
 
 
@@ -511,7 +558,7 @@ def action():
 
         elif menu_choice_got=="GRAPH EXAMPLE":
             try:
-                filename = "Version_2_to_do_list_graph_struture"
+                filename = "Version_2_to_do_list_graph_structure"
                 with open(filename, "r", encoding="utf-8") as f:
 
                     eg.codebox("Version2 To DO List App Guide", title=TN, text=f)
@@ -521,15 +568,15 @@ def action():
         else:
             eg.msgbox(f"current choice: {menu_choice_got}\nPlease select a menu option\nInvalid choice you do\nTry it Again")
 
-        store_data(data)
+
 
 
 def main():
 
-    print("Welcome to To_Do Lists!")
+    eg.msgbox("Welcome to To_Do Lists!")
 
     action()
-    print("App is ENDING")
+    eg.msgbox("App is ENDING")
 
 
 
