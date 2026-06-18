@@ -34,10 +34,10 @@ class App:
         self.root=root
         self.root.title("To_Dd_List App")#title name
         self.root.geometry("480x520")#size of screen
-        self.root.config(bg="white")#background of screen is white
+        self.root.config(bg="grey")#background of screen is white
         self.lists=load_data()#get data
         self.index_list=None#list index in data
-        self.show_dashboard()
+        self.show_menu()
 
 
     def clear_window(self):
@@ -55,6 +55,21 @@ class App:
         #put the block in the bottom and fill in all  x-axis
         bottom_frame.pack(side="bottom",fill="x")
         return bottom_frame
+    def show_menu(self):
+        self.clear_window()
+        self.index_list=None
+        self.header("To_Dd_List")
+        option_frame=tk.Frame(self.root)
+        option_frame.place(relx=0.5,rely=0.5,anchor="center",)
+
+        tk.Button(option_frame,text="Start",width=15,height=2,bg="white",font=("Helvetica",11,"italic"),command=self.show_dashboard).pack(pady=5)
+        tk.Button(option_frame, text="Ending", width=15, height=2, bg="white",font=("Helvetica",11,"italic"), command=self.close_app).pack(pady=5)
+
+    def close_app(self):
+        print("Closing app........")
+        self.root.destroy()
+
+
     def show_dashboard(self):
         self.clear_window()
         self.index_list=None
