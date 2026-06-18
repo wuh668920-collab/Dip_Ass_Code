@@ -116,6 +116,32 @@ class App:
             save_data(self.lists)
             self.show_dashboard()
 
+    def show_list(self,list_index):
+        self.clear_window()
+        self.current=list_index
+        list=self.lists[list_index]
+
+        self.header(f"List: {list['name']}  ",color="purple")
+
+        tk.Button(self.root,text="Rename list",command=self.rename_list).pack(side="left")
+
+        frame=tk.Frame(self.root,bg="#f5f5f5")
+        frame.pack(fill="both",expand=True,padx=20,pady=10)
+        if not list["items"]:
+            tk.Lebal(frame,text="No task found in the list",font=("Arial",11,"italic"),fg="gry",bg="#f5f5f5").pack(fill="x",pady=2)
+        else:
+            for i ,task in enumerate(list["items"]):
+                done=task["done"]
+                symbol="!" if done else "o"
+                color="green" if done else "red"
+
+                row=tk.Frame(frame,bg="#f5f5f5")
+                row.pack(fill="x",pady=2)
+
+                tk.Button(row,text=f"{symbol},{task['name'] - task['note']}",font=("Arial",10),anchor="w",bg=color,width=38,command= lambda index=list_index:self.open_task(task)).pack(side="left")
+
+                bar=self.bottom_bar()
+                tk.Button(bar,)
             
 
 
