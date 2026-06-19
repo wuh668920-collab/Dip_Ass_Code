@@ -8,7 +8,7 @@ import tkinter as tk
 
 from tkinter import messagebox, simpledialog
 
-FIlE = "To_Do_List.txt"
+FIlE = "To_Do_List_version3.txt"
 
 
 # Use load_data function to load current data and
@@ -128,7 +128,7 @@ class App:
         frame=tk.Frame(self.root,bg="#f5f5f5")
         frame.pack(fill="both",expand=True,padx=20,pady=10)
         if not list["items"]:
-            tk.Lebal(frame,text="No task found in the list",font=("Arial",11,"italic"),fg="gry",bg="#f5f5f5").pack(fill="x",pady=2)
+            tk.Label(frame,text="No task found in the list",font=("Arial",11,"italic"),fg="grey",bg="#f5f5f5").pack(fill="x",pady=2)
         else:
             for i ,task in enumerate(list["items"]):
                 done=task["done"]
@@ -138,12 +138,26 @@ class App:
                 row=tk.Frame(frame,bg="#f5f5f5")
                 row.pack(fill="x",pady=2)
 
-                tk.Button(row,text=f"{symbol},{task['name'] - task['note']}",font=("Arial",10),anchor="w",bg=color,width=38,command= lambda index=list_index:self.open_task(task)).pack(side="left")
+                tk.Button(row,text=f"{symbol},{task['name'] } -{task['description']}",font=("Arial",10),anchor="w",bg=color,width=38,command= lambda index=list_index:self.open_task(index)).pack(side="left")
 
-                bar=self.bottom_bar()
-                tk.Button(bar,)
-            
+        bar=self.bottom_bar()
+        tk.Button(bar,text="Back",command=self.show_dashboard).pack(side="left",padx=10)
+        tk.Button(bar,text="+ Add Task",font=("Arial",11,"bold"),bg="lightyellow",command=self.add_task).pack(side="right",padx=15)
 
+    def rename_list(self):
+        new=simpledialog.askstring("Rename","New list name:")
+        if new:
+            self.lists[self.current]["name"]=new
+            save_data(self.lists)
+            self.show_list(self.current)
+    def add_task(self):
+        name=simpledialog.askstring("Task Name","Task name:")
+        if not name:
+            return
+        description=simpledialog.askstring("Task Description","Task description:(optional)")
+        self.lists[self.current]["items"].append({"name":name,"description":description,"done":False})
+        save_data(self.lists)
+        self.show_list(self.current)
 
 if __name__ == "__main__":
     root = tk.Tk()
