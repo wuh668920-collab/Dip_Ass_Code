@@ -8,6 +8,8 @@ import tkinter as tk
 
 from tkinter import messagebox, simpledialog
 
+from fontTools.ttLib.tables.E_B_L_C_ import indexSubHeaderSize
+
 FIlE = "To_Do_List_version3.txt"
 
 
@@ -138,7 +140,7 @@ class App:
                 row=tk.Frame(frame,bg="#f5f5f5")
                 row.pack(fill="x",pady=2)
 
-                tk.Button(row,text=f"{symbol},{task['name'] } -{task['description']}",font=("Arial",10),anchor="w",bg=color,width=38,command= lambda index=list_index:self.open_task(index)).pack(side="left")
+                tk.Button(row,text=f"{symbol},{task['name'] } -{task['description']}",font=("Arial",10),anchor="w",bg=color,width=38,command= lambda index=i:self.open_task(index)).pack(side="left")
 
         bar=self.bottom_bar()
         tk.Button(bar,text="Back",command=self.show_dashboard).pack(side="left",padx=10)
@@ -159,6 +161,43 @@ class App:
         save_data(self.lists)
         self.show_list(self.current)
 
+    def open_task(self,index):
+        li=self.current
+        task=self.lists[li]["items"][index]
+
+        popup=tk.Toplevel(self.root)
+        popup.title(task["name"])
+        popup.geometry("300x260+160+160")
+        popup.grab_set()
+        popup.config(bg="white")
+
+        status="Done" if task["done"] else "Pending"
+        tk.Label(popup,text=task["name"].upper(),font=("Arial",13,"bold"),bg="white").pack(pady=10)
+        tk.Label(popup,text=f"Description:{task['description']}\nStatus:{status}",font=("Arial",10),bg="white",justify="left").pack(pady=5)
+
+        def refresh():
+            save_data(self.lists)
+            popup.destroy()
+            self.show_list(li)
+
+        def status_control():
+            self.lists[li]["items"][index]["done"]=not task["done"]
+            refresh()
+
+        def edit():
+            nn=simpledialog.askstring("Edit name","Rename:",parent=popup)
+            nt=simpledialog.askstring("Edit Task","Description:",parent=popup)
+            if nn:self.lists[li]["items"][index]["name"]=nn
+            if nt:self.lists[li]["items"][index]["description"]=nt
+            refresh()
+
+        def delete():
+            self.lists[li]["items"].pop(index)
+            refresh()
+
+        tk.Button(popup,text="Done/Pending",command=status_control,width=28).pack(pady=6)
+        tk.Button(popup,text="edit",command=edit,width=28).pack(pady=6)
+        tk.Button(popup,text="Delete",command=delete,bg="pink").pack(pady=8)
 if __name__ == "__main__":
     root = tk.Tk()
     App(root)
