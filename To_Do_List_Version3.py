@@ -157,7 +157,7 @@ class App:
         if not name:
             return
         description=simpledialog.askstring("Task Description","Task description:(optional)")
-        self.lists[self.current]["items"].append({"name":name,"description":description,"done":False})
+        self.lists[self.current]["items"].append({"name":name,"description":description,"done":False,"mark":""})
         save_data(self.lists)
         self.show_list(self.current)
 
@@ -167,13 +167,14 @@ class App:
 
         popup=tk.Toplevel(self.root)
         popup.title(task["name"])
-        popup.geometry("300x260+160+160")
+        popup.geometry("300x300+160+160")
         popup.grab_set()
         popup.config(bg="white")
 
         status="Done" if task["done"] else "Pending"
+        mark_text=task.get("mark","") or "No mark yet"
         tk.Label(popup,text=task["name"].upper(),font=("Arial",13,"bold"),bg="white").pack(pady=10)
-        tk.Label(popup,text=f"Description:{task['description']}\nStatus:{status}",font=("Arial",10),bg="white",justify="left").pack(pady=5)
+        tk.Label(popup,text=f"Description:{task['description']}\nStatus:{status}\nMark: {mark_text}",font=("Arial",10),bg="white",justify="left").pack(pady=5)
 
         def refresh():
             save_data(self.lists)
@@ -183,7 +184,11 @@ class App:
         def status_control():
             self.lists[li]["items"][index]["done"]=not task["done"]
             refresh()
-
+        def mark_control():
+            rating=simpledialog.askinteger("Mark Task","Give a mark or note (eg. 5/5,Great,***)",parent=popup)
+            if rating:
+                self.lists[li]["items"][index]["mark"]=rating
+                refresh()
         def edit():
             nn=simpledialog.askstring("Edit name","Rename:",parent=popup)
             nt=simpledialog.askstring("Edit Task","Description:",parent=popup)
@@ -197,7 +202,10 @@ class App:
 
         tk.Button(popup,text="Done/Pending",command=status_control,width=28).pack(pady=6)
         tk.Button(popup,text="edit",command=edit,width=28).pack(pady=6)
+        tk.Button(popup,text="Mark Rate",command=mark_control,width=28,bg="lightyellow").pack(pady=8)
         tk.Button(popup,text="Delete",command=delete,bg="pink").pack(pady=8)
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     App(root)
