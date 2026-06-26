@@ -92,7 +92,7 @@ class App:
         #if there is no lists in the data
         #
         if not self.lists:
-            tk.Label(bottom_frame,text="Sorry, no lists yet.Please click Add List Button below",font=("Arial",11,"italic"),fg="white",bg="#f5f5f5").pack(pady=30)
+            tk.Label(bottom_frame,text="Sorry, no lists yet.Please click Add List Button below",font=("Arial",11,"italic"),fg="black",bg="#f5f5f5").pack(pady=30)
 
         else:
             #if there are lists in the data, use loop and Frame to show
@@ -208,10 +208,13 @@ class App:
 
         # function to control and get the mark.
         def mark_control():
-            rating=simpledialog.askinteger("Mark Task","Give a mark or note (eg. 5/5,Great,***)",parent=popup)
-            if rating:
-                self.lists[li]["items"][index]["mark"]=rating
-                refresh()
+            rating=simpledialog.askinteger("Mark Task","Give a mark or note (1~100)",parent=popup)
+            if rating in range(1,101):
+                if rating:
+                    self.lists[li]["items"][index]["mark"]=rating
+                    refresh()
+            else:
+                messagebox.showerror("Mark Error","Mark must be between 1 and 100")
 
         # function to get new name and new description of the current task
         def edit():

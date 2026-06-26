@@ -39,7 +39,7 @@ class common_function:
             print(f"{i}.{element}")
 
 
-# the item check class to check a particular item for updating item , remove item, state a item, mark a item
+# the item check class to check a particular item for updating item , remove item, statue a item, mark a item
 class item_check:
     def __init__(self, item_check_list, store_3Dlist):
 
@@ -48,16 +48,16 @@ class item_check:
         self.store_3Dlist = store_3Dlist
 
 
-# show all items' data like name, task to do, deadline, state and mark if it have'
+# show all items' data like name, task to do, deadline, statue and mark if it have'
     def show_item_data(self, index_list, index_item):
         # use "item" to store an item with its data
         item = self.store_3Dlist[index_list][2][index_item]
         print(f"Item Detail: ")
         print(
-            f"\n--- ITEM DETAILS ---\nName: {item[0]}\nTask: {item[1]}\nTime: {item[2]}\nState: {item[3]}\nMark: {item[4]}")
+            f"\n--- ITEM DETAILS ---\nName: {item[0]}\nTask: {item[1]}\nTime: {item[2]}\nstatue: {item[3]}\nMark: {item[4]}")
 
-    # use function to update a particular item and changing its name and task
-    def update_item(self, index_list, index_item):
+    # use function to rename a particular item and changing its name and task
+    def rename_item(self, index_list, index_item):
 
         # the process allow use input a space if they don't need a name or task to the item'
         while True:
@@ -88,16 +88,16 @@ class item_check:
         self.store_3Dlist[index_list][2].pop(index_item)
         # print item removed successfully to ensure the item is removed
         print("Item removed successfully.")
-    # use function to change the state of the item if the user finish it
-    def state_item(self, index_list, index_item):
-        state = input("Complete? [Yes/No]: ").capitalize()
+    # use function to change the statue of the item if the user finish it
+    def statue_item(self, index_list, index_item):
+        statue = input("Complete? [Yes/No]: ").capitalize()
 
         while True:
 
-            if state == "Yes" :
+            if statue == "Yes" :
                  self.store_3Dlist[index_list][2][index_item][3] = "Completed"
                  break
-            elif state == "No" :
+            elif statue == "No" :
 
 
                 self.store_3Dlist[index_list][2][index_item][3] = "Uncompleted"
@@ -105,6 +105,7 @@ class item_check:
             else:
                 print("Invalid input.")
                 print("Please only type [Yes] or [No].")
+                break
     # use the function to mark the item task
     def mark_item(self, index_list, index_item):
         mark=0
@@ -153,7 +154,7 @@ class item_operator(common_function, item_check):
             else:
                 break
 
-        # combine them as a list, default the state is uncompleted and mark is none
+        # combine them as a list, default the statue is uncompleted and mark is none
         self.item = [name, task, time, "Uncompleted", "None"]
     # function to add a new item
     def add_item(self, index_list):
@@ -196,6 +197,7 @@ class item_operator(common_function, item_check):
 
                 # use loop to run the operators
                 while True:
+                    print(SPACE)
                     print(f"\nEditing: {self.store_3Dlist[index_list][2][index_operator][0]}")
                     for i, op in enumerate(self.item_check_list):
                         print(f"{i + 1}.{op}")
@@ -214,9 +216,9 @@ class item_operator(common_function, item_check):
                         self.remove_item(index_list, index_operator)
                         break
                     elif choice == 2:
-                        self.update_item(index_list, index_operator)
+                        self.rename_item(index_list, index_operator)
                     elif choice == 3:
-                        self.state_item(index_list, index_operator)
+                        self.statue_item(index_list, index_operator)
                     elif choice == 4:
                         self.mark_item(index_list, index_operator)
                     elif choice == 5:
@@ -286,7 +288,7 @@ class list_check(common_function):
                 print("Please enter your action")
                 while True:
                     choice = int(input("Choice: "))
-                    if choice in range(1,6):
+                    if choice in range(1,5):
                         break
                     else:
                         print("Please enter a valid choice!")
@@ -340,6 +342,8 @@ class list_operator(list_check):
 
         # if there is list in the store 3D list , it will show the order depends on creating time and show out name of list
         else:
+
+
             for i, lst in enumerate(self.store_3Dlist):
                 print(f"{i + 1}. {lst[0]}")
             print(SPACE)
@@ -523,7 +527,7 @@ def main():
         store_3Dlist = []
 
     # To store the all functions in these list and use class method to run the code
-    item_check_menu = ["Remove", "Update", "Complete/State", "Mark", "Back"]
+    item_check_menu = ["Remove", "rename", "Complete/statue", "Mark", "Back"]
     item_check_menu=operator_list_recombine(item_check_menu)
 
 
@@ -533,7 +537,7 @@ def main():
 
     list_op_menu = ["Add New List", "Remove List", "Check List", "Clear All Lists", "Back"]
     list_op_menu=operator_list_recombine(list_op_menu)
-    list_check_menu = ["Update Info", "Show Detail", "Manage Items", "Back"]
+    list_check_menu = ["rename Info", "Show Detail", "Manage Items", "Back"]
     list_check_menu=operator_list_recombine(list_check_menu)
     list_op_cl = list_operator(list_op_menu, store_3Dlist, list_check_menu, item_op_cl)
 
@@ -563,7 +567,7 @@ def main():
         else:
             print("Please select 1, 2")
 
-        # update the filename and store new data
+        # rename the filename and store new data
         with open(filename, "w") as file:
             json.dump(store_3Dlist, file)
 

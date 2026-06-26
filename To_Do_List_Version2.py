@@ -31,7 +31,7 @@ MENU_OP = ["START LIST","USE GUIDE","GRAPH EXAMPLE","ENDING"]
 LISTS_OP = ["Check List","Add New List", "Remove List",  "Clear All Lists", "Back"]
 LIST_F_OP = ["Manage Items","Update Info", "Show Detail", "Back"]
 ITEMS_OP = [ "Check Items","Add New Items", "Cancel All Items", "Back"]
-ITEM_F_OP = ["Remove", "Update", "Complete/State", "Mark", "Back"]
+ITEM_F_OP = ["Remove", "Update", "Complete/statue", "Mark", "Back"]
 TN = "To-Do-List-App"
 
 # use space as barrier in the textbox
@@ -49,7 +49,7 @@ SPACE = "-" * 60 + "\n" + "-" * 60
 # function to get data from To_Do_list.txt
 def got_data():
     # to ensure the file name
-    filename="To_Do_List.txt"
+    filename="To_Do_List_version2.txt"
 
     # to open filename and get the data
     try:
@@ -72,7 +72,7 @@ def got_data():
 # function to store data into the To_Do_list.txt
 def store_data(data):
     # to ensure the file name
-    filename="To_Do_List.txt"
+    filename="To_Do_List_version2.txt"
     #to use new data to cover old data
     with open(filename, "w") as file:
         json.dump(data, file)
@@ -84,7 +84,7 @@ def store_data(data):
 
 # function to show out current lists has been stored
 def show_list(data):
-    # create empty list and named it as content to stored sentence
+    # create empty list and name it as content to stored sentence
     content=[]
     # input elements set, and tell user which content list includes
     content.append("order ."+"List Name" + "\t:\n" + "List Description" + "\n"+SPACE+"\n")
@@ -263,11 +263,11 @@ def add_item(index,data):
 
     if switch==1:
 
-        # the default of state is Incomplete and the default of mark is 0 .
-        state="Incomplete"
+        # the default of statue is Incomplete and the default of mark is 0 .
+        statue="Incomplete"
         mark=0
         # use item which is list type to store the item information
-        new_item=[item_name,item_desc,item_time,state,mark]
+        new_item=[item_name,item_desc,item_time,statue,mark]
 
     # return the item out to store the item in data
         data[index][2].append(new_item)
@@ -292,12 +292,12 @@ def item_f_op(choice,data,index,item_index):
             new_item=add_item()
             data[index][2][item_index]=new_item
 
-        # change the item state, complete or incomplete or doing
-        elif choice=="Complete/State":
-            state=eg.buttonbox("Please select the item state [Incomplete/Complete/Doing]",TN,["Incomplete","Complete","Doing"])
-            if state is None:
-                state=data[index][2][item_index][3]
-            data[index][2][item_index][3]=state
+        # change the item statue, complete or incomplete or doing
+        elif choice=="Complete/statue":
+            statue=eg.buttonbox("Please select the item statue [Incomplete/Complete/Doing]",TN,["Incomplete","Complete","Doing"])
+            if statue is None:
+                statue=data[index][2][item_index][3]
+            data[index][2][item_index][3]=statue
 
         # change the item mark from 0 to 1-5
         elif choice=="Mark":
@@ -321,7 +321,7 @@ def item_f_show_current_item(index,data):
     # use content to store the item information use item_names to store the item's name to use for selecting
     content=[]
     item_names=[]
-    set=f"order.Item Name;\t\tItem Description;\nItem Time;\tState;\tMark\n{SPACE}\n"
+    set=f"order.Item Name;\t\tItem Description;\nItem Time;\tstatue;\tMark\n{SPACE}\n"
     content.append(set)
 
     # use the loop to append item information in the content list
@@ -352,7 +352,7 @@ def item_f_show_current_item(index,data):
 
 # function to  select which function you want to do for items
 def item_f_choice_got(data,index,item_index):
-    ITEM_F_OP = ["Remove", "Update", "Complete/State", "Mark", "Back"]
+    ITEM_F_OP = ["Remove", "Update", "Complete/statue", "Mark", "Back"]
     choice=eg.buttonbox(f"Please select a function to the item [{data[index][2][item_index][0]}]  ",choices=ITEM_F_OP,title=TN)
     if choice is None:
         choice="Back"
@@ -573,7 +573,7 @@ def action():
 
 def main():
 
-    eg.msgbox("Welcome to To_Do Lists!")
+    eg.msgbox("Welcome to To Do Lists App!")
 
     action()
     eg.msgbox("App is ENDING")
